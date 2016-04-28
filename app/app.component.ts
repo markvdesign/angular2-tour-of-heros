@@ -1,6 +1,8 @@
 import {Component} from 'angular2/core';
 import { Hero } from './hero';
 import { HeroDetailComponent } from './hero-detail.component';
+import { HeroService } from './hero.service';
+import { OnInit } from 'angular2/core'
 
 // The @Component is what is used to display inside the ViewModel... in this case in the my-app tag in the DOM.
 @Component({
@@ -66,14 +68,25 @@ import { HeroDetailComponent } from './hero-detail.component';
             border-radius: 4px 0 0 4px;
         }
    `],
-   directives: [HeroDetailComponent]
+   directives: [HeroDetailComponent],
+   providers: [HeroService]
 })
 
 
-export class AppComponent {
-    heroes = HEROES;   
+export class AppComponent implements OnInit {   
     title = 'Tour of Heros';
+    heroes: Hero[];
     selectedHero: Hero;
+    
+    constructor(private _heroService: HeroService) { }
+    
+    getHeroes() {
+        this._heroService.getHeroes().then(heroes => this.heroes = heroes );
+    }
+    
+    ngOnInit() {
+        this.getHeroes();
+    }
     
     onSelect(hero: Hero) {
         
@@ -82,17 +95,3 @@ export class AppComponent {
     }
     
 }
-
-// Data Array for Heroes, we are only doing this for the tut as this data would normally be supplied via an API of DB etc.
-let HEROES: Hero[] = [
-    { "id": 11, "name": "Mr. Nice" },
-    { "id": 12, "name": "Narco" },
-    { "id": 13, "name": "Bombasto" },
-    { "id": 14, "name": "Celeritas" },
-    { "id": 15, "name": "Magneta" },
-    { "id": 16, "name": "RubberMan" },
-    { "id": 17, "name": "Dynama" },
-    { "id": 18, "name": "Dr IQ" },
-    { "id": 19, "name": "Magma" },
-    { "id": 20, "name": "Tornado" }
-];
